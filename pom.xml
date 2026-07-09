@@ -12,7 +12,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
-		<commons-lang3.version>3.12.0</commons-lang3.version>
+		<commons-lang3.version>3.18.0</commons-lang3.version>
 		<lombok.version>1.18.46</lombok.version>
 		<swagger-annotations.version>2.1.12</swagger-annotations.version>
 		<jackson.version>2.18.9</jackson.version>
@@ -54,7 +54,7 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
-			<version>5.6.0</version>
+			<version>6.2.8</version>
 		</dependency>
 	</dependencies>
 
