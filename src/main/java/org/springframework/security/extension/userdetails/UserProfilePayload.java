@@ -15,7 +15,7 @@
  */
 package org.springframework.security.extension.userdetails;
 
-import io.github.hiwepy.jwt.JwtPayload;
+import io.github.easy4j.jwt.JwtPayload;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
