@@ -5,7 +5,7 @@
 	<groupId>io.github.easy4j</groupId>
 	<artifactId>spring-security-extension2</artifactId>
 	<description>Security Biz SDK - Constants, POJOs, Interfaces (Spring Boot Independent)</description>
-    <developers>
+        <developers>
         <developer>
             <name>Loong Wan</name>
             <email>hiwepy@gmail.com</email>
