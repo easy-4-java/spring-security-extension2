@@ -4,6 +4,8 @@
 
 [![Java](https://img.shields.io/badge/Java-17-orange)](https://github.com/easy-4-java/spring-security-extension2) [![License](https://img.shields.io/badge/license-Apache%202.0-green)](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
+spring-security-extension2（"Security Biz SDK"）是 easy4j Spring Security 生态的共享契约层，独立于 Spring Boot：
+
 ## 目录
 
 - [1. Project Overview](#1-project-overview)
