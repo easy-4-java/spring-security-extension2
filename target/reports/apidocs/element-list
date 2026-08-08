@@ -1,0 +1,6 @@
+org.springframework.security.extension.authentication
+org.springframework.security.extension.authentication.captcha
+org.springframework.security.extension.exception
+org.springframework.security.extension.property
+org.springframework.security.extension.property.header
+org.springframework.security.extension.userdetails

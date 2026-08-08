@@ -20,8 +20,16 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Header Hsts Properties
+ * Configuration properties that control the HTTP Strict Transport Security
+ * (HSTS) response header written by the security filter.
+ *
+ * <p>Mirrors the equivalent Spring Security configuration and is typically
+ * bound from the application configuration under the
+ * {@code spring.security.headers.hsts} prefix.</p>
+ *
  * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 3.0.0
+ * @see <a href="https://tools.ietf.org/html/rfc6797">RFC 6797</a>
  */
 @Getter
 @Setter
@@ -29,34 +37,28 @@ import lombok.ToString;
 public class HeaderHstsProperties {
 
 	/**
-	 * Enable Security Headers.
+	 * When {@code true}, the filter writes the HSTS header. Defaults to
+	 * {@code false}.
 	 */
 	private boolean enabled = false;
 
 	/**
-	 * <p>
-	 * If true, subdomains should be considered HSTS Hosts too. The default is true.
-	 * </p>
+	 * If {@code true}, subdomains should be considered HSTS hosts too.
+	 * The default is {@code true}.
 	 *
-	 * <p>
-	 * See <a href="https://tools.ietf.org/html/rfc6797#section-6.1.2">Section
-	 * 6.1.2</a> for additional details.
-	 * </p>
+	 * <p>See <a href="https://tools.ietf.org/html/rfc6797#section-6.1.2">RFC 6797
+	 * Section 6.1.2</a> for additional details.</p>
 	 */
 	private boolean includeSubDomains;
-	
+
 	/**
-	 * The maximum amount of time (in seconds) to consider this domain as a known HSTS Host.
-	 * <p>
-	 * Sets the value (in seconds) for the max-age directive of the Strict-Transport-Security header. The default is one year.
-	 * </p>
+	 * The maximum amount of time (in seconds) to consider this domain as a
+	 * known HSTS host. Sets the value (in seconds) for the {@code max-age}
+	 * directive of the {@code Strict-Transport-Security} header.
 	 *
-	 * <p>
-	 * This instructs browsers how long to remember to keep this domain as a known
-	 * HSTS Host. See <a
-	 * href="https://tools.ietf.org/html/rfc6797#section-6.1.1">Section 6.1.1</a> for
-	 * additional details.
-	 * </p>
+	 * <p>The default is one year. See <a
+	 * href="https://tools.ietf.org/html/rfc6797#section-6.1.1">RFC 6797 Section
+	 * 6.1.1</a> for additional details.</p>
 	 */
 	private long maxAgeInSeconds;
 

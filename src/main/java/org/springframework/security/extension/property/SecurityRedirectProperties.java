@@ -20,8 +20,18 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Security Redirect Properties
+ * Configuration properties that control how Spring Security calculates
+ * redirect URLs.
+ *
+ * <p>These properties mirror a subset of Spring Security's
+ * {@code RedirectStrategy} configuration and are typically bound from the
+ * application configuration under the {@code spring.security.redirect}
+ * prefix.</p>
+ *
  * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 3.0.0
+ * @see SecurityLogoutProperties
+ * @see SecurityEntryPointProperties
  */
 @Getter
 @Setter
@@ -29,9 +39,9 @@ import lombok.ToString;
 public class SecurityRedirectProperties {
 
 	/**
-	 * If <tt>true</tt>, causes any redirection URLs to be calculated minus the protocol
-	 * and context path (defaults to <tt>false</tt>).
+	 * When {@code true}, any redirect URL is calculated without the protocol
+	 * and the context path. Defaults to {@code false}.
 	 */
 	private boolean contextRelative;
-	
+
 }

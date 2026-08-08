@@ -23,8 +23,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Header Hpkp Properties
+ * Configuration properties that control the HTTP Public Key Pinning (HPKP)
+ * response header written by the security filter.
+ *
+ * <p>Mirrors the equivalent Spring Security configuration and is typically
+ * bound from the application configuration under the
+ * {@code spring.security.headers.hpkp} prefix.</p>
+ *
  * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 3.0.0
+ * @see <a href="https://tools.ietf.org/html/rfc7469">RFC 7469</a>
  */
 @Getter
 @Setter
@@ -32,95 +40,64 @@ import java.util.Map;
 public class HeaderHpkpProperties {
 
 	/**
-	 * Enable Security Headers.
+	 * When {@code true}, the filter writes the {@code Public-Key-Pins} header.
+	 * Defaults to {@code false}.
 	 */
 	private boolean enabled = false;
 
 	/**
-	 * <p>
-	 * If true, the pinning policy applies to this pinned host as well as any subdomains
-	 * of the host's domain name. The default is false.
-	 * </p>
+	 * If {@code true}, the pinning policy applies to this pinned host as well
+	 * as any subdomains of the host's domain name. The default is
+	 * {@code false}.
 	 *
-	 * <p>
-	 * See <a href="https://tools.ietf.org/html/rfc7469#section-2.1.3">Section 2.1.3</a>
-	 * for additional details.
-	 * </p>
+	 * <p>See <a href="https://tools.ietf.org/html/rfc7469#section-2.1.3">RFC 7469
+	 * Section 2.1.3</a> for additional details.</p>
 	 */
 	private boolean includeSubDomains;
-	
+
 	/**
-	 * 
-	 * The maximum amount of time (in seconds) to regard the host
-	 * 
-	 * <p>
-	 * Sets the value (in seconds) for the max-age directive of the Public-Key-Pins header. The default is 60 days.
-	 * </p>
+	 * The maximum amount of time (in seconds) to regard the host as pinned.
+	 * Sets the value (in seconds) for the {@code max-age} directive of the
+	 * {@code Public-Key-Pins} header. The default is 60 days.
 	 *
-	 * <p>
-	 * This instructs browsers how long they should regard the host (from whom the message was received)
-	 * as a known pinned host. See <a href="https://tools.ietf.org/html/rfc7469#section-2.1.2">Section
-	 * 2.1.2</a> for additional details.
-	 * </p>
+	 * <p>See <a href="https://tools.ietf.org/html/rfc7469#section-2.1.2">RFC 7469
+	 * Section 2.1.2</a> for additional details.</p>
 	 */
 	private long maxAgeInSeconds;
-	
+
 	/**
-	 * <p>
-	 * If true, the browser should not terminate the connection with the server. The default is true.
-	 * </p>
+	 * If {@code true}, the browser should not terminate the connection with
+	 * the server. The default is {@code true}.
 	 *
-	 * <p>
-	 * See <a href="https://tools.ietf.org/html/rfc7469#section-2.1">Section 2.1</a>
-	 * for additional details.
-	 * </p>
-	 *
-	 * true to report only, else false
+	 * <p>See <a href="https://tools.ietf.org/html/rfc7469#section-2.1">RFC 7469
+	 * Section 2.1</a> for additional details.</p>
 	 */
 	private boolean reportOnly = true;
-	
+
 	/**
-	 * 
-	 * The URI where the browser should send the report to.
-	 * 
-	 * <p>
-	 * Sets the URI to which the browser should report pin validation failures.
-	 * </p>
+	 * The URI where the browser should send the pin-validation report.
 	 *
-	 * <p>
-	 * See <a href="https://tools.ietf.org/html/rfc7469#section-2.1.4">Section 2.1.4</a>
-	 * for additional details.
-	 * </p>
+	 * <p>See <a href="https://tools.ietf.org/html/rfc7469#section-2.1.4">RFC 7469
+	 * Section 2.1.4</a> for additional details.</p>
 	 */
 	private String reportUri;
-	
+
 	/**
-	 * <p>
-	 * Adds a list of SHA256 hashed pins for the pin- directive of the Public-Key-Pins header.
-	 * </p>
+	 * A list of base64-encoded SPKI fingerprints to add to the {@code pin-}
+	 * directive of the {@code Public-Key-Pins} header.
 	 *
-	 * <p>
-	 * The pin directive specifies a way for web host operators to indicate
-	 * a cryptographic identity that should be bound to a given web host.
-	 * See <a href="https://tools.ietf.org/html/rfc7469#section-2.1.1">Section 2.1.1</a> for additional details.
-	 * </p>
-	 *
-	 * A list of base64-encoded SPKI fingerprints.
+	 * <p>See <a href="https://tools.ietf.org/html/rfc7469#section-2.1.1">RFC 7469
+	 * Section 2.1.1</a> for additional details.</p>
 	 */
 	private String[] sha256Pins = new String[0];
-	
+
 	/**
-	 * pins the map of base64-encoded SPKI fingerprint &amp; cryptographic hash algorithm pairs.
-	 * 
-	 * <p>
-	 * Sets the value for the pin- directive of the Public-Key-Pins header.
-	 * </p>
+	 * Map of base64-encoded SPKI fingerprints to cryptographic hash algorithm
+	 * pairs, used to set the value of the {@code pin-} directive of the
+	 * {@code Public-Key-Pins} header.
 	 *
-	 * <p>
-	 * The pin directive specifies a way for web host operators to indicate
-	 * a cryptographic identity that should be bound to a given web host.
-	 * See <a href="https://tools.ietf.org/html/rfc7469#section-2.1.1">Section 2.1.1</a> for additional details.
-	 * </p>
+	 * <p>See <a href="https://tools.ietf.org/html/rfc7469#section-2.1.1">RFC 7469
+	 * Section 2.1.1</a> for additional details.</p>
 	 */
 	private Map<String, String> pins = new HashMap<String, String>();
 

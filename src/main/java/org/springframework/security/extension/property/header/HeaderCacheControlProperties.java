@@ -20,8 +20,15 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Header Cache Control Properties
+ * Configuration properties that control the
+ * {@code Cache-Control} response header written by the security filter.
+ *
+ * <p>Mirrors the equivalent Spring Security configuration and is typically
+ * bound from the application configuration under the
+ * {@code spring.security.headers.cache-control} prefix.</p>
+ *
  * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 3.0.0
  */
 @Getter
 @Setter
@@ -29,7 +36,8 @@ import lombok.ToString;
 public class HeaderCacheControlProperties {
 
 	/**
-	 * Enable Security Headers.
+	 * When {@code true}, the filter writes the {@code Cache-Control} header.
+	 * Defaults to {@code false}.
 	 */
 	private boolean enabled = false;
 
