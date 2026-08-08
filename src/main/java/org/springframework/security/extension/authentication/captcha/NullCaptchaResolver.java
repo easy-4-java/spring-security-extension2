@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, hiwepy (https://github.com/hiwepy).
+ * Copyright (c) 2018, Loong Wan (https://github.com/loong10k).
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -20,16 +20,39 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 
 /**
- * Null Captcha Resolver
- * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ * No-op {@link CaptchaResolver} that always reports the captcha as valid.
+ *
+ * <p>It is intended to be wired in by default when no captcha mechanism is
+ * configured. Both {@link #validCaptcha(HttpServletRequest, String)} and
+ * {@link #setCaptcha(HttpServletRequest, HttpServletResponse, String, Date)}
+ * are essentially pass-throughs.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 3.0.0
+ * @see CaptchaResolver
  */
 public class NullCaptchaResolver implements CaptchaResolver {
 
+	/**
+	 * Always returns {@code true}.
+	 *
+	 * @param request the servlet request
+	 * @param capText the captcha text supplied by the client
+	 * @return {@code true}
+	 */
 	@Override
 	public boolean validCaptcha(HttpServletRequest request, String capText) {
 		return true;
 	}
 
+	/**
+	 * No-op implementation that discards the supplied captcha.
+	 *
+	 * @param request  the servlet request
+	 * @param response the servlet response
+	 * @param capText  the new captcha text
+	 * @param capDate  the timestamp at which the captcha was issued
+	 */
 	@Override
 	public void setCaptcha(HttpServletRequest request, HttpServletResponse response, String capText, Date capDate) {
 

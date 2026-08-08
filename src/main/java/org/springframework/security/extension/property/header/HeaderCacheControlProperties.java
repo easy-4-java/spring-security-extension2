@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, hiwepy (https://github.com/hiwepy).
+ * Copyright (c) 2018, Loong Wan (https://github.com/loong10k).
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -20,8 +20,17 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Header Cache Control Properties
- * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ * Configuration properties that control the
+ * {@code Cache-Control} response header written by the security filter.
+ *
+ * <p>Mirrors the equivalent Spring Security configuration and is typically
+ * bound from the application configuration under the
+ * {@code spring.security.headers.cache-control} prefix.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 3.0.0
+ * @see HeaderHstsProperties
+ * @see HeaderFrameOptionsProperties
  */
 @Getter
 @Setter
@@ -29,7 +38,8 @@ import lombok.ToString;
 public class HeaderCacheControlProperties {
 
 	/**
-	 * Enable Security Headers.
+	 * When {@code true}, the filter writes the {@code Cache-Control} header.
+	 * Defaults to {@code false}.
 	 */
 	private boolean enabled = false;
 

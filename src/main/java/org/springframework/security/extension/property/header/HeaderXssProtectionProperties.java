@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, hiwepy (https://github.com/hiwepy).
+ * Copyright (c) 2018, Loong Wan (https://github.com/loong10k).
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -20,8 +20,17 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Header Xss Protection Properties
- * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ * Configuration properties that control the browser XSS protection header
+ * written by the security filter.
+ *
+ * <p>Mirrors the equivalent Spring Security configuration and is typically
+ * bound from the application configuration under the
+ * {@code spring.security.headers.xss-protection} prefix.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 3.0.0
+ * @see HeaderContentTypeOptionsProperties
+ * @see HeaderFrameOptionsProperties
  */
 @Getter
 @Setter
@@ -29,14 +38,15 @@ import lombok.ToString;
 public class HeaderXssProtectionProperties {
 
 	/**
-	 * If false, will not specify the mode as blocked. In this instance, any content
-	 * will be attempted to be fixed. If true, the content will be replaced with "#".
+	 * If {@code true}, the {@code X-XSS-Protection} header is written.
 	 */
 	private boolean enabled;
-	
+
 	/**
-	 * If false, will not specify the mode as blocked. In this instance, any content
-	 * will be attempted to be fixed. If true, the content will be replaced with "#".
+	 * If {@code false}, the mode is not specified as {@code blocked}. In that
+	 * case, any malicious content is attempted to be sanitised. If
+	 * {@code true}, the content is replaced with the literal string
+	 * {@code "#"}.
 	 */
 	private boolean block;
 
