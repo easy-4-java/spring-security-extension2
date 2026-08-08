@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthConstants.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">io.github.easy4j:spring-security-extension2</a> &gt; <a href="index.source.html" class="el_package">org.springframework.security.extension.exception</a> &gt; <span class="el_source">AuthConstants.java</span></div><h1>AuthConstants.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (c) 2018-present, easy-4-java (https://github.com/easy-4-java).
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.springframework.security.extension.exception;
+
+/**
+ * Collection of string constants used throughout the authentication and
+ * authorisation layers of the easy-4-java security stack.
+ *
+ * &lt;p&gt;The constants fall into two groups:&lt;/p&gt;
+ * &lt;ul&gt;
+ *     &lt;li&gt;principal attribute names ({@link #UID}, {@link #UKEY},
+ *         {@link #UCODE}, {@link #RID}, {@link #RKEY});&lt;/li&gt;
+ *     &lt;li&gt;response status markers ({@link #RT_SUCCESS}, {@link #RT_FAIL},
+ *         {@link #RT_ERROR}).&lt;/li&gt;
+ * &lt;/ul&gt;
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 3.0.0
+ * @see AuthResponse
+ * @see AuthResponseCode
+ */
+<span class="nc" id="L35">public class AuthConstants {</span>
+
+	/** Principal attribute name for the upstream numeric user id. */
+	public static final String UID = &quot;uid&quot;;
+	/** Principal attribute name for the business-level unique user key. */
+	public static final String UKEY = &quot;ukey&quot;;
+	/** Principal attribute name for the business-level unique user code. */
+	public static final String UCODE = &quot;ucode&quot;;
+	/** Principal attribute name for the upstream numeric role id. */
+	public static final String RID = &quot;rid&quot;;
+	/** Principal attribute name for the business-level unique role key. */
+	public static final String RKEY = &quot;rkey&quot;;
+
+	/** Status string indicating a successful response. */
+	public static final String RT_SUCCESS = &quot;success&quot;;
+	/** Status string indicating a failed response (recoverable client error). */
+	public static final String RT_FAIL = &quot;fail&quot;;
+	/** Status string indicating an erroneous response (server-side error). */
+	public static final String RT_ERROR = &quot;error&quot;;
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

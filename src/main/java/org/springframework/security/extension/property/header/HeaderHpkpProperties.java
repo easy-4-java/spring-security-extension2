@@ -32,6 +32,7 @@ import java.util.Map;
  *
  * @author [@Loong Wan](https://github.com/loong10k)
  * @since 3.0.0
+ * @see HeaderHstsProperties
  * @see <a href="https://tools.ietf.org/html/rfc7469">RFC 7469</a>
  */
 @Getter

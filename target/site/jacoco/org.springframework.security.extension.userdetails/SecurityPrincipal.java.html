@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SecurityPrincipal.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">io.github.easy4j:spring-security-extension2</a> &gt; <a href="index.source.html" class="el_package">org.springframework.security.extension.userdetails</a> &gt; <span class="el_source">SecurityPrincipal.java</span></div><h1>SecurityPrincipal.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (c) 2018-present, easy-4-java (https://github.com/easy-4-java).
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.springframework.security.extension.userdetails;
+
+import io.github.easy4j.jwt.JwtPayload.RolePair;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.util.CollectionUtils;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+/**
+ * Extended Spring Security {@link User} that carries the domain-specific
+ * identity (uid, uuid, ukey, ucode) and role/permission information required
+ * by the easy-4-java security stack.
+ *
+ * &lt;p&gt;Beyond the standard Spring Security username/password/authority trio,
+ * this principal exposes:&lt;/p&gt;
+ * &lt;ul&gt;
+ *     &lt;li&gt;multiple stable user identifiers ({@code uid}, {@code uuid},
+ *         {@code ukey}, {@code ucode});&lt;/li&gt;
+ *     &lt;li&gt;role identifier triple ({@code rid}, {@code rkey}, {@code rcode});&lt;/li&gt;
+ *     &lt;li&gt;lifecycle flags such as {@code bound}, {@code initial} and
+ *         {@code verify};&lt;/li&gt;
+ *     &lt;li&gt;a profile map, a permission set, an optional request sign and the
+ *         latest geographic coordinates captured from the client.&lt;/li&gt;
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;The class is cloneable and is intended to be stored as the authentication
+ * principal by Spring Security so that downstream code can rely on a richer
+ * type than the default {@link User}.&lt;/p&gt;
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 3.0.0
+ * @see User
+ * @see UserProfilePayload
+ * @see JwtPayloadRepository
+ */
+@SuppressWarnings(&quot;serial&quot;)
+public class SecurityPrincipal extends User implements Cloneable {
+
+	/** Constant that identifies the built-in administrator role. */
+	protected static final String ADMIN_STRING = &quot;admin&quot;;
+
+	/** Internal numeric identifier of the user in the upstream table. */
+	private String uid;
+	/** Universally unique identifier (external stable id). */
+	private String uuid;
+	/** Business-level unique key of the user (e.g. employee number). */
+	private String ukey;
+	/** Business-level unique code of the user (e.g. internal job number). */
+	private String ucode;
+	/** Internal numeric identifier of the primary role in the role table. */
+	private String rid;
+	/** Business-level unique key of the primary role. */
+	private String rkey;
+	/** Business-level unique code of the primary role. */
+	private String rcode;
+	/** Whether the user has completed the binding step (e.g. email or phone binding). */
+<span class="fc" id="L77">	private boolean bound = Boolean.FALSE;</span>
+	/** Whether the user has completed the profile initialisation step. */
+<span class="fc" id="L79">	private boolean initial = Boolean.FALSE;</span>
+	/** Whether the user must perform multi-factor authentication. */
+<span class="fc" id="L81">	private boolean verify = Boolean.FALSE;</span>
+	/** Optional request signature that can be validated by the server. */
+	private String sign;
+	/** Latest longitude reported by the client (optional). */
+	private double longitude;
+	/** Latest latitude reported by the client (optional). */
+	private double latitude;
+	/** Roles assigned to the user (as JWT role pairs). */
+	private List&lt;RolePair&gt; roles;
+	/** Fine-grained permission markers granted to the user. */
+<span class="fc" id="L91">	private Set&lt;String&gt; perms = new HashSet&lt;&gt;();</span>
+	/** Free-form profile data, keyed by attribute name. */
+<span class="fc" id="L93">	private Map&lt;String, Object&gt; profile = new HashMap&lt;String, Object&gt;();</span>
+
+	/**
+	 * Create a principal using a username, password and a variable-arity list
+	 * of role names. Each role name is converted to a Spring Security
+	 * {@link SimpleGrantedAuthority}.
+	 *
+	 * @param username the username presented to Spring Security
+	 * @param password the (already-encoded) password
+	 * @param roles    zero or more role names; null triggers an
+	 *                 {@link InsufficientAuthenticationException}
+	 * @see #roleAuthorities(List)
+	 */
+	public SecurityPrincipal(String username, String password, String... roles) {
+<span class="fc" id="L107">		super(username, password, roleAuthorities(Arrays.asList(roles)));</span>
+<span class="fc" id="L108">	}</span>
+
+	/**
+	 * Convert a list of role names into Spring Security authorities.
+	 *
+	 * @param roles role names; must not be {@code null}
+	 * @return a non-null collection of {@link SimpleGrantedAuthority}
+	 *         instances, one per role name
+	 * @throws InsufficientAuthenticationException if {@code roles} is {@code null}
+	 */
+	public static Collection&lt;? extends GrantedAuthority&gt; roleAuthorities(List&lt;String&gt; roles) {
+<span class="fc bfc" id="L119" title="All 2 branches covered.">		if (roles == null) {</span>
+<span class="fc" id="L120">			throw new InsufficientAuthenticationException(&quot;User has no roles assigned&quot;);</span>
+		}
+<span class="fc" id="L122">		List&lt;GrantedAuthority&gt; authorities = roles.stream().map(authority -&gt; new SimpleGrantedAuthority(authority))</span>
+<span class="fc" id="L123">				.collect(Collectors.toList());</span>
+
+<span class="fc" id="L125">		return authorities;</span>
+	}
+
+	/**
+	 * Create a principal using a pre-built collection of authorities.
+	 *
+	 * @param username    the username presented to Spring Security
+	 * @param password    the (already-encoded) password
+	 * @param authorities the authorities granted to the user
+	 */
+	public SecurityPrincipal(String username, String password, Collection&lt;? extends GrantedAuthority&gt; authorities) {
+<span class="fc" id="L136">		super(username, password, authorities);</span>
+<span class="fc" id="L137">	}</span>
+
+	/**
+	 * Create a principal with full control over the account-status flags.
+	 *
+	 * @param username               the username presented to Spring Security
+	 * @param password               the (already-encoded) password
+	 * @param enabled                whether the account is enabled
+	 * @param accountNonExpired      whether the account is non-expired
+	 * @param credentialsNonExpired  whether the credentials are non-expired
+	 * @param accountNonLocked       whether the account is non-locked
+	 * @param authorities            the authorities granted to the user
+	 */
+	public SecurityPrincipal(String username, String password, boolean enabled, boolean accountNonExpired,
+			boolean credentialsNonExpired, boolean accountNonLocked,
+			Collection&lt;? extends GrantedAuthority&gt; authorities) {
+<span class="fc" id="L153">		super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);</span>
+<span class="fc" id="L154">	}</span>
+
+	/**
+	 * @return the upstream numeric user id
+	 */
+	public String getUid() {
+<span class="fc" id="L160">		return uid;</span>
+	}
+
+	/**
+	 * @param uid the upstream numeric user id
+	 */
+	public void setUid(String uid) {
+<span class="fc" id="L167">		this.uid = uid;</span>
+<span class="fc" id="L168">	}</span>
+
+	/**
+	 * @return the external unique user id
+	 */
+	public String getUuid() {
+<span class="fc" id="L174">		return uuid;</span>
+	}
+
+	/**
+	 * @param uuid the external unique user id
+	 */
+	public void setUuid(String uuid) {
+<span class="fc" id="L181">		this.uuid = uuid;</span>
+<span class="fc" id="L182">	}</span>
+
+	/**
+	 * @return the business-level unique key of the user
+	 */
+	public String getUkey() {
+<span class="fc" id="L188">		return ukey;</span>
+	}
+
+	/**
+	 * @param ukey the business-level unique key of the user
+	 */
+	public void setUkey(String ukey) {
+<span class="fc" id="L195">		this.ukey = ukey;</span>
+<span class="fc" id="L196">	}</span>
+
+	/**
+	 * @return the business-level unique code of the user
+	 */
+	public String getUcode() {
+<span class="fc" id="L202">		return ucode;</span>
+	}
+
+	/**
+	 * @param ucode the business-level unique code of the user
+	 */
+	public void setUcode(String ucode) {
+<span class="fc" id="L209">		this.ucode = ucode;</span>
+<span class="fc" id="L210">	}</span>
+
+	/**
+	 * @return the internal id of the primary role
+	 */
+	public String getRid() {
+<span class="fc" id="L216">		return rid;</span>
+	}
+
+	/**
+	 * @param rid the internal id of the primary role
+	 */
+	public void setRid(String rid) {
+<span class="fc" id="L223">		this.rid = rid;</span>
+<span class="fc" id="L224">	}</span>
+
+	/**
+	 * @return the business-level unique key of the primary role
+	 */
+	public String getRkey() {
+<span class="fc" id="L230">		return rkey;</span>
+	}
+
+	/**
+	 * @param rkey the business-level unique key of the primary role
+	 */
+	public void setRkey(String rkey) {
+<span class="fc" id="L237">		this.rkey = rkey;</span>
+<span class="fc" id="L238">	}</span>
+
+	/**
+	 * @return the business-level unique code of the primary role
+	 */
+	public String getRcode() {
+<span class="fc" id="L244">		return rcode;</span>
+	}
+
+	/**
+	 * @param rcode the business-level unique code of the primary role
+	 */
+	public void setRcode(String rcode) {
+<span class="fc" id="L251">		this.rcode = rcode;</span>
+<span class="fc" id="L252">	}</span>
+
+	/**
+	 * @return whether the binding step has been completed
+	 */
+	public boolean isBound() {
+<span class="fc" id="L258">		return bound;</span>
+	}
+
+	/**
+	 * @param bound whether the binding step has been completed
+	 */
+	public void setBound(boolean bound) {
+<span class="fc" id="L265">		this.bound = bound;</span>
+<span class="fc" id="L266">	}</span>
+
+	/**
+	 * @return whether the profile initialisation step has been completed
+	 */
+	public boolean isInitial() {
+<span class="fc" id="L272">		return initial;</span>
+	}
+
+	/**
+	 * @param initial whether the profile initialisation step has been completed
+	 */
+	public void setInitial(boolean initial) {
+<span class="fc" id="L279">		this.initial = initial;</span>
+<span class="fc" id="L280">	}</span>
+
+	/**
+	 * @param verify whether multi-factor authentication is required
+	 */
+	public void setVerify(boolean verify) {
+<span class="fc" id="L286">		this.verify = verify;</span>
+<span class="fc" id="L287">	}</span>
+
+	/**
+	 * @return whether multi-factor authentication is required
+	 */
+	public boolean isVerify() {
+<span class="fc" id="L293">		return verify;</span>
+	}
+
+	/**
+	 * @return the optional request signature
+	 */
+	public String getSign() {
+<span class="fc" id="L300">		return sign;</span>
+	}
+
+	/**
+	 * @param sign the optional request signature
+	 */
+	public void setSign(String sign) {
+<span class="fc" id="L307">		this.sign = sign;</span>
+<span class="fc" id="L308">	}</span>
+
+	/**
+	 * @return the latest reported longitude, or {@code 0.0} if none
+	 */
+	public double getLongitude() {
+<span class="fc" id="L314">		return longitude;</span>
+	}
+
+	/**
+	 * @param longitude the latest reported longitude
+	 */
+	public void setLongitude(double longitude) {
+<span class="fc" id="L321">		this.longitude = longitude;</span>
+<span class="fc" id="L322">	}</span>
+
+	/**
+	 * @return the latest reported latitude, or {@code 0.0} if none
+	 */
+	public double getLatitude() {
+<span class="fc" id="L328">		return latitude;</span>
+	}
+
+	/**
+	 * @param latitude the latest reported latitude
+	 */
+	public void setLatitude(double latitude) {
+<span class="fc" id="L335">		this.latitude = latitude;</span>
+<span class="fc" id="L336">	}</span>
+
+	/**
+	 * @return the assigned roles as JWT role pairs (may be {@code null})
+	 */
+	public List&lt;RolePair&gt; getRoles() {
+<span class="fc" id="L342">		return roles;</span>
+	}
+
+	/**
+	 * @param roles the assigned roles as JWT role pairs
+	 */
+	public void setRoles(List&lt;RolePair&gt; roles) {
+<span class="fc" id="L349">		this.roles = roles;</span>
+<span class="fc" id="L350">	}</span>
+
+	/**
+	 * @return the set of permission markers granted to the user
+	 */
+	public Set&lt;String&gt; getPerms() {
+<span class="fc" id="L356">		return perms;</span>
+	}
+
+	/**
+	 * @param perms the set of permission markers granted to the user
+	 */
+	public void setPerms(Set&lt;String&gt; perms) {
+<span class="fc" id="L363">		this.perms = perms;</span>
+<span class="fc" id="L364">	}</span>
+
+	/**
+	 * @return the free-form profile data map
+	 */
+	public Map&lt;String, Object&gt; getProfile() {
+<span class="fc" id="L370">		return profile;</span>
+	}
+
+	/**
+	 * @param profile the free-form profile data map
+	 */
+	public void setProfile(Map&lt;String, Object&gt; profile) {
+<span class="fc" id="L377">		this.profile = profile;</span>
+<span class="fc" id="L378">	}</span>
+
+	/**
+	 * Determine whether the user holds the built-in administrator role.
+	 *
+	 * &lt;p&gt;The check is performed in three places:&lt;/p&gt;
+	 * &lt;ol&gt;
+	 *     &lt;li&gt;the {@code key} of any role in {@link #getRoles()};&lt;/li&gt;
+	 *     &lt;li&gt;the {@link #getRkey() primary role key};&lt;/li&gt;
+	 *     &lt;li&gt;the {@link #getRid() primary role id}.&lt;/li&gt;
+	 * &lt;/ol&gt;
+	 *
+	 * @return {@code true} if the user is an administrator
+	 */
+	public boolean isAdmin() {
+<span class="fc bfc" id="L393" title="All 2 branches covered.">		if(CollectionUtils.isEmpty(roles)) {</span>
+<span class="fc" id="L394">			return false;</span>
+		}
+<span class="pc bpc" id="L396" title="1 of 6 branches missed.">		return CollectionUtils.contains(getRoles().iterator(), ADMIN_STRING) || StringUtils.equalsIgnoreCase(ADMIN_STRING, this.getRkey()) || StringUtils.equalsIgnoreCase(ADMIN_STRING, this.getRid());</span>
+	}
+
+	/**
+	 * Determine whether the user holds a specific role, by comparing the
+	 * {@code key} field of each assigned {@link RolePair} case-insensitively.
+	 *
+	 * @param role the role key to look up
+	 * @return {@code true} if the role is assigned, {@code false} otherwise
+	 */
+	public boolean hasRole(String role) {
+<span class="fc bfc" id="L407" title="All 2 branches covered.">		if(!StringUtils.isNoneBlank(role)) {</span>
+<span class="fc" id="L408">			return false;</span>
+		}
+<span class="fc bfc" id="L410" title="All 2 branches covered.">		if(CollectionUtils.isEmpty(roles)) {</span>
+<span class="fc" id="L411">			return false;</span>
+		}
+<span class="fc" id="L413">		return roles.stream().anyMatch(entry -&gt; StringUtils.equalsIgnoreCase(entry.getKey(), role));</span>
+	}
+
+	/**
+	 * Determine whether the user holds at least one of the supplied role keys.
+	 *
+	 * @param roles the role keys to look up
+	 * @return {@code true} if at least one of the supplied roles is assigned
+	 */
+	public boolean hasAnyRole(String... roles) {
+<span class="fc bfc" id="L423" title="All 2 branches covered.">		if(!StringUtils.isNoneBlank(roles)) {</span>
+<span class="fc" id="L424">			return false;</span>
+		}
+<span class="fc bfc" id="L426" title="All 2 branches covered.">		if(CollectionUtils.isEmpty(getRoles())) {</span>
+<span class="fc" id="L427">			return false;</span>
+		}
+<span class="fc" id="L429">		return CollectionUtils.containsAny(getRoles(), Arrays.asList(roles));</span>
+	}
+
+	@Override
+	public boolean equals(Object o) {
+<span class="fc bfc" id="L434" title="All 2 branches covered.">		if (this == o) {</span>
+<span class="fc" id="L435">			return true;</span>
+		}
+<span class="pc bpc" id="L437" title="2 of 4 branches missed.">		if (o == null || getClass() != o.getClass()) {</span>
+<span class="nc" id="L438">			return false;</span>
+		}
+<span class="fc" id="L440">		SecurityPrincipal user = (SecurityPrincipal) o;</span>
+<span class="pc bpc" id="L441" title="3 of 6 branches missed.">		if (uid != null ? !uid.equals(user.getUid()) : user.getUid() != null) {</span>
+<span class="fc" id="L442">			return false;</span>
+		}
+<span class="fc" id="L444">		return true;</span>
+	}
+
+	@Override
+	public int hashCode() {
+<span class="fc bfc" id="L449" title="All 2 branches covered.">		return uid != null ? uid.hashCode() : 0;</span>
+	}
+
+	@Override
+	public String toString() {
+<span class="fc" id="L454">		return &quot; User {&quot; + &quot;userid=&quot; + uid + &quot;, username='&quot; + getUsername() + '\'' + &quot;, password='&quot; + getPassword()</span>
+<span class="fc" id="L455">				+ '\'' + &quot;, enabled='&quot; + isEnabled() + '\'' + &quot;, accountNonExpired=&quot;</span>
+<span class="fc" id="L456">				+ isAccountNonExpired() + &quot;, credentialsNonExpired=&quot; + isCredentialsNonExpired() + &quot;, accountNonLocked=&quot;</span>
+<span class="fc" id="L457">				+ isAccountNonLocked() + '}';</span>
+	}
+
+
+	/**
+	 * Convert this principal into a serialisable {@link UserProfilePayload}.
+	 *
+	 * &lt;p&gt;The {@code perms} collection is defensively copied into a new
+	 * {@link HashSet}; when the {@code profile} map is empty a fresh empty
+	 * map is exposed on the payload, otherwise the same reference is shared.&lt;/p&gt;
+	 *
+	 * @return a fresh {@link UserProfilePayload} that mirrors this principal's
+	 *         user/role/permission state
+	 */
+	public UserProfilePayload toPayload(){
+
+<span class="fc" id="L473">		UserProfilePayload payload = new UserProfilePayload();</span>
+
+<span class="fc" id="L475">		payload.setUid(this.getUid());</span>
+<span class="fc" id="L476">		payload.setUuid(this.getUuid());</span>
+<span class="fc" id="L477">		payload.setUkey(this.getUkey());</span>
+<span class="fc" id="L478">		payload.setUcode(this.getUcode());</span>
+<span class="fc" id="L479">		payload.setPerms(new HashSet&lt;String&gt;(perms));</span>
+<span class="fc" id="L480">		payload.setRid(this.getRid());</span>
+<span class="fc" id="L481">		payload.setRkey(this.getRkey());</span>
+<span class="fc" id="L482">		payload.setRcode(this.getRcode());</span>
+<span class="fc" id="L483">		payload.setRoles(this.getRoles());</span>
+<span class="fc" id="L484">		payload.setBound(this.isBound());</span>
+<span class="fc" id="L485">		payload.setInitial(this.isInitial());</span>
+<span class="fc" id="L486">		payload.setVerify(this.isVerify());</span>
+
+<span class="fc bfc" id="L488" title="All 2 branches covered.">		if (CollectionUtils.isEmpty(this.getProfile())) {</span>
+<span class="fc" id="L489">			payload.setProfile(new HashMap&lt;&gt;(0));</span>
+		} else {
+<span class="fc" id="L491">			payload.setProfile(this.getProfile());</span>
+		}
+<span class="fc" id="L493">		return payload;</span>
+
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

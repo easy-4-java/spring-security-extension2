@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthResponse.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">io.github.easy4j:spring-security-extension2</a> &gt; <a href="index.source.html" class="el_package">org.springframework.security.extension.exception</a> &gt; <span class="el_source">AuthResponse.java</span></div><h1>AuthResponse.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (c) 2018-present, easy-4-java (https://github.com/easy-4-java).
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.springframework.security.extension.exception;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Generic response envelope returned by the authentication and authorisation
+ * layers to API clients.
+ *
+ * &lt;p&gt;Each instance is an immutable quadruple of {@code (code, status, message,
+ * data)} with a settable {@code data} payload for late-binding scenarios. The
+ * accompanying static factory methods ({@link #success success},
+ * {@link #fail fail}, {@link #of of}) provide a fluent way to build typical
+ * responses and convert the envelope into a {@link Map} via
+ * {@link #toMap()} for direct serialisation.&lt;/p&gt;
+ *
+ * @param &lt;T&gt; the type of the {@code data} payload
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 3.0.0
+ * @see AuthResponseCode
+ * @see AuthConstants
+ */
+public class AuthResponse&lt;T&gt; {
+
+	/** Success or failure code (see {@link ApiCodeValue}). */
+	private final int code;
+	/** Coarse-grained status: {@code success}, {@code fail} or {@code error}. */
+	private final String status;
+	/** Success or failure message. */
+	private final String message;
+	/** Success or failure data payload. */
+	private T data;
+
+	/**
+	 * Build a successful response carrying only a message.
+	 *
+	 * @param message the human-readable message
+	 */
+<span class="fc" id="L54">	public AuthResponse(final String message) {</span>
+<span class="fc" id="L55">		this.code = AuthResponseCode.SC_AUTHC_SUCCESS.getCode();</span>
+<span class="fc" id="L56">		this.status = AuthConstants.RT_SUCCESS;</span>
+<span class="fc" id="L57">		this.message = message;</span>
+<span class="fc" id="L58">	}</span>
+
+	/**
+	 * Build a response that mirrors the supplied {@link AuthResponseCode}.
+	 *
+	 * @param code the response code, providing the integer code and status
+	 */
+<span class="fc" id="L65">	protected AuthResponse(final AuthResponseCode code) {</span>
+<span class="fc" id="L66">		this.code = code.getCode();</span>
+		;
+<span class="fc" id="L68">		this.status = code.getStatus();</span>
+<span class="fc" id="L69">		this.message = null;</span>
+<span class="fc" id="L70">	}</span>
+
+	/**
+	 * Build a response that mirrors the supplied {@link AuthResponseCode} and
+	 * carries a data payload.
+	 *
+	 * @param code the response code, providing the integer code and status
+	 * @param data the data payload to attach
+	 */
+<span class="fc" id="L79">	protected AuthResponse(final AuthResponseCode code, final T data) {</span>
+<span class="fc" id="L80">		this.code = code.getCode();</span>
+		;
+<span class="fc" id="L82">		this.status = code.getStatus();</span>
+<span class="fc" id="L83">		this.message = null;</span>
+<span class="fc" id="L84">		this.data = data;</span>
+<span class="fc" id="L85">	}</span>
+
+	/**
+	 * Build a response that mirrors the supplied {@link AuthResponseCode} and
+	 * carries a custom message and data payload.
+	 *
+	 * @param code    the response code, providing the integer code and status
+	 * @param message the human-readable message
+	 * @param data    the data payload to attach
+	 */
+<span class="fc" id="L95">	protected AuthResponse(final AuthResponseCode code, final String message, final T data) {</span>
+<span class="fc" id="L96">		this.code = code.getCode();</span>
+		;
+<span class="fc" id="L98">		this.status = code.getStatus();</span>
+<span class="fc" id="L99">		this.message = message;</span>
+<span class="fc" id="L100">		this.data = data;</span>
+<span class="fc" id="L101">	}</span>
+
+	/**
+	 * Build a response that uses an arbitrary integer code and a message;
+	 * the status defaults to {@link AuthConstants#RT_SUCCESS}.
+	 *
+	 * @param code    the integer code
+	 * @param message the human-readable message
+	 */
+	protected AuthResponse(final int code, final String message) {
+<span class="fc" id="L111">		this(code, AuthConstants.RT_SUCCESS, message);</span>
+<span class="fc" id="L112">	}</span>
+
+	/**
+	 * Build a response that uses an arbitrary integer code, status and
+	 * message (data defaults to {@code null}).
+	 *
+	 * @param code    the integer code
+	 * @param status  the coarse-grained status string
+	 * @param message the human-readable message
+	 */
+<span class="fc" id="L122">	protected AuthResponse(final int code, final String status, final String message) {</span>
+<span class="fc" id="L123">		this.code = code;</span>
+<span class="fc" id="L124">		this.status = status;</span>
+<span class="fc" id="L125">		this.message = message;</span>
+<span class="fc" id="L126">	}</span>
+
+	/**
+	 * Build a response that uses an arbitrary integer code and message; the
+	 * status defaults to {@link AuthConstants#RT_SUCCESS} (data is supplied).
+	 *
+	 * @param code    the integer code
+	 * @param message the human-readable message
+	 * @param data    the data payload to attach
+	 */
+	protected AuthResponse(final int code, final String message, final T data) {
+<span class="fc" id="L137">		this(code, AuthConstants.RT_SUCCESS, message, data);</span>
+<span class="fc" id="L138">	}</span>
+
+	/**
+	 * Build a fully customisable response.
+	 *
+	 * @param code    the integer code
+	 * @param status  the coarse-grained status string
+	 * @param message the human-readable message
+	 * @param data    the data payload to attach
+	 */
+<span class="fc" id="L148">	protected AuthResponse(final int code, final String status, final String message, final T data) {</span>
+<span class="fc" id="L149">		this.code = code;</span>
+<span class="fc" id="L150">		this.status = status;</span>
+<span class="fc" id="L151">		this.message = message;</span>
+<span class="fc" id="L152">		this.data = data;</span>
+<span class="fc" id="L153">	}</span>
+
+	// success -----------------------------------------------------------------
+
+	/**
+	 * Build a successful response carrying only a message.
+	 *
+	 * @param &lt;T&gt;     the data type
+	 * @param message the human-readable message
+	 * @return a fresh {@link AuthResponse} that uses
+	 *         {@link AuthResponseCode#SC_AUTHC_SUCCESS}
+	 */
+	public static &lt;T&gt; AuthResponse&lt;T&gt; success(final String message) {
+<span class="fc" id="L166">		return of(AuthResponseCode.SC_AUTHC_SUCCESS, message, null);</span>
+	}
+
+	/**
+	 * Build a successful response carrying only a data payload.
+	 *
+	 * @param &lt;T&gt;  the data type
+	 * @param data the data payload to attach
+	 * @return a fresh {@link AuthResponse} that uses
+	 *         {@link AuthResponseCode#SC_AUTHC_SUCCESS}
+	 */
+	public static &lt;T&gt; AuthResponse&lt;T&gt; success(final T data) {
+<span class="nc" id="L178">		return of(AuthResponseCode.SC_AUTHC_SUCCESS, data);</span>
+	}
+
+	/**
+	 * Build a successful response carrying both a message and a data payload.
+	 *
+	 * @param &lt;T&gt;     the data type
+	 * @param message the human-readable message
+	 * @param data    the data payload to attach
+	 * @return a fresh {@link AuthResponse} that uses
+	 *         {@link AuthResponseCode#SC_AUTHC_SUCCESS}
+	 */
+	public static &lt;T&gt; AuthResponse&lt;T&gt; success(final String message, final T data) {
+<span class="fc" id="L191">		return of(AuthResponseCode.SC_AUTHC_SUCCESS, message, data);</span>
+	}
+
+	/**
+	 * Build a successful response with a custom integer code.
+	 *
+	 * @param &lt;T&gt;     the data type
+	 * @param code    the integer code
+	 * @param message the human-readable message
+	 * @return a fresh {@link AuthResponse} with status
+	 *         {@link AuthConstants#RT_SUCCESS}
+	 */
+	public static &lt;T&gt; AuthResponse&lt;T&gt; success(final int code, final String message) {
+<span class="fc" id="L204">		return of(code, AuthConstants.RT_SUCCESS, message);</span>
+	}
+
+	// fail -----------------------------------------------------------------
+
+	/**
+	 * Build a failed response carrying only a message.
+	 *
+	 * @param &lt;T&gt;     the data type
+	 * @param message the human-readable message
+	 * @return a fresh {@link AuthResponse} that uses
+	 *         {@link AuthResponseCode#SC_AUTHC_FAIL}
+	 */
+	public static &lt;T&gt; AuthResponse&lt;T&gt; fail(final String message) {
+<span class="fc" id="L218">		return of(AuthResponseCode.SC_AUTHC_FAIL, message, null);</span>
+	}
+
+	/**
+	 * Build a failed response carrying only a data payload.
+	 *
+	 * @param &lt;T&gt;  the data type
+	 * @param data the data payload to attach
+	 * @return a fresh {@link AuthResponse} that uses
+	 *         {@link AuthResponseCode#SC_AUTHC_FAIL}
+	 */
+	public static &lt;T&gt; AuthResponse&lt;T&gt; fail(final T data) {
+<span class="nc" id="L230">		return of(AuthResponseCode.SC_AUTHC_FAIL, data);</span>
+	}
+
+	/**
+	 * Build a failed response with a custom integer code.
+	 *
+	 * @param &lt;T&gt;     the data type
+	 * @param code    the integer code
+	 * @param message the human-readable message
+	 * @return a fresh {@link AuthResponse} with status
+	 *         {@link AuthConstants#RT_FAIL}
+	 */
+	public static &lt;T&gt; AuthResponse&lt;T&gt; fail(final int code, final String message) {
+<span class="fc" id="L243">		return of(code, AuthConstants.RT_FAIL, message);</span>
+	}
+
+	// -----------------------------------------------------------------
+
+	/**
+	 * Build a response that mirrors the supplied {@link AuthResponseCode} and
+	 * carries no extra data.
+	 *
+	 * @param &lt;T&gt;  the data type
+	 * @param code the response code
+	 * @return a fresh {@link AuthResponse}
+	 */
+	public static &lt;T&gt; AuthResponse&lt;T&gt; of(final AuthResponseCode code) {
+<span class="fc" id="L257">		return new AuthResponse&lt;T&gt;(code);</span>
+	}
+
+	/**
+	 * Build a response that mirrors the supplied {@link AuthResponseCode} and
+	 * carries a data payload.
+	 *
+	 * @param &lt;T&gt;  the data type
+	 * @param code the response code
+	 * @param data the data payload to attach
+	 * @return a fresh {@link AuthResponse}
+	 */
+	public static &lt;T&gt; AuthResponse&lt;T&gt; of(final AuthResponseCode code, final T data) {
+<span class="fc" id="L270">		return new AuthResponse&lt;T&gt;(code, data);</span>
+	}
+
+	/**
+	 * Build a response that mirrors the supplied {@link AuthResponseCode} and
+	 * carries a custom message and data payload.
+	 *
+	 * @param &lt;T&gt;     the data type
+	 * @param code    the response code
+	 * @param message the human-readable message
+	 * @param data    the data payload to attach
+	 * @return a fresh {@link AuthResponse}
+	 */
+	public static &lt;T&gt; AuthResponse&lt;T&gt; of(final AuthResponseCode code, final String message, final T data) {
+<span class="fc" id="L284">		return new AuthResponse&lt;T&gt;(code, message, data);</span>
+	}
+
+	/**
+	 * Build a response from a textual integer code and a message. The status
+	 * defaults to {@link AuthConstants#RT_SUCCESS}.
+	 *
+	 * @param &lt;T&gt;     the data type
+	 * @param code    the integer code, as a string
+	 * @param message the human-readable message
+	 * @return a fresh {@link AuthResponse}
+	 * @throws NumberFormatException if {@code code} cannot be parsed as an
+	 *                               integer
+	 */
+	public static &lt;T&gt; AuthResponse&lt;T&gt; of(final String code, final String message) {
+<span class="fc" id="L299">		return new AuthResponse&lt;T&gt;(Integer.parseInt(code), message);</span>
+	}
+
+	/**
+	 * Build a response from an integer code and a message. The status
+	 * defaults to {@link AuthConstants#RT_SUCCESS}.
+	 *
+	 * @param &lt;T&gt;     the data type
+	 * @param code    the integer code
+	 * @param message the human-readable message
+	 * @return a fresh {@link AuthResponse}
+	 */
+	public static &lt;T&gt; AuthResponse&lt;T&gt; of(final int code, final String message) {
+<span class="fc" id="L312">		return new AuthResponse&lt;T&gt;(code, message);</span>
+	}
+
+	/**
+	 * Build a response from a textual integer code, a status and a message.
+	 *
+	 * @param &lt;T&gt;     the data type
+	 * @param code    the integer code, as a string
+	 * @param status  the coarse-grained status string
+	 * @param message the human-readable message
+	 * @return a fresh {@link AuthResponse}
+	 * @throws NumberFormatException if {@code code} cannot be parsed as an
+	 *                               integer
+	 */
+	public static &lt;T&gt; AuthResponse&lt;T&gt; of(final String code, final String status, final String message) {
+<span class="fc" id="L327">		return of(Integer.parseInt(code), status, message, null);</span>
+	}
+
+	/**
+	 * Build a response from an integer code, a status and a message.
+	 *
+	 * @param &lt;T&gt;     the data type
+	 * @param code    the integer code
+	 * @param status  the coarse-grained status string
+	 * @param message the human-readable message
+	 * @return a fresh {@link AuthResponse}
+	 */
+	public static &lt;T&gt; AuthResponse&lt;T&gt; of(final int code, final String status, final String message) {
+<span class="fc" id="L340">		return of(code, status, message, null);</span>
+	}
+
+	/**
+	 * Build a fully customisable response from raw values.
+	 *
+	 * @param &lt;T&gt;     the data type
+	 * @param code    the integer code
+	 * @param status  the coarse-grained status string
+	 * @param message the human-readable message
+	 * @param data    the data payload to attach
+	 * @return a fresh {@link AuthResponse}
+	 */
+	public static &lt;T&gt; AuthResponse&lt;T&gt; of(final int code, final String status, final String message, final T data) {
+<span class="fc" id="L354">		return new AuthResponse&lt;T&gt;(code, status, message, data);</span>
+	}
+
+	/**
+	 * @return the integer code carried by this response
+	 */
+	public int getCode() {
+<span class="fc" id="L361">		return code;</span>
+	}
+
+	/**
+	 * @return the coarse-grained status string carried by this response
+	 */
+	public String getStatus() {
+<span class="fc" id="L368">		return status;</span>
+	}
+
+	/**
+	 * @return the human-readable message carried by this response
+	 */
+	public String getmessage() {
+<span class="fc" id="L375">		return message;</span>
+	}
+
+	/**
+	 * @return the data payload carried by this response (may be {@code null})
+	 */
+	public T getData() {
+<span class="fc" id="L382">		return data;</span>
+	}
+
+	/**
+	 * Serialise the response into a {@link Map} with the keys {@code code},
+	 * {@code status}, {@code message} and {@code data}.
+	 *
+	 * @return a mutable map representation of this response
+	 */
+	public Map&lt;String, Object&gt; toMap() {
+<span class="fc" id="L392">		Map&lt;String, Object&gt; rtMap = new HashMap&lt;String, Object&gt;();</span>
+<span class="fc" id="L393">		rtMap.put(&quot;code&quot;, code);</span>
+<span class="fc" id="L394">		rtMap.put(&quot;status&quot;, status);</span>
+<span class="fc" id="L395">		rtMap.put(&quot;message&quot;, message);</span>
+<span class="fc" id="L396">		rtMap.put(&quot;data&quot;, data);</span>
+<span class="fc" id="L397">		return rtMap;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

@@ -30,6 +30,7 @@ import lombok.ToString;
  *
  * @author [@Loong Wan](https://github.com/loong10k)
  * @since 3.0.0
+ * @see HeaderXssProtectionProperties
  */
 @Getter
 @Setter

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JwtPayloadRepository.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">io.github.easy4j:spring-security-extension2</a> &gt; <a href="index.source.html" class="el_package">org.springframework.security.extension.userdetails</a> &gt; <span class="el_source">JwtPayloadRepository.java</span></div><h1>JwtPayloadRepository.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (c) 2018, Loong Wan (https://github.com/loong10k).
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package org.springframework.security.extension.userdetails;
+
+import io.github.easy4j.jwt.JwtPayload;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
+
+import java.util.Map;
+
+/**
+ * Repository abstraction for issuing, verifying and parsing JSON Web Tokens
+ * within the easy-4-java security stack.
+ *
+ * &lt;p&gt;All methods on this interface are {@code default} so that implementations
+ * can pick the level of indirection they want to expose. The base methods are
+ * intentionally permissive &amp;mdash; by default an empty string is returned for
+ * every issue operation and {@code false} for every verify operation &amp;mdash;
+ * allowing callers to use the repository as a no-op during early integration.&lt;/p&gt;
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 3.0.0
+ * @see SecurityPrincipal
+ * @see UserProfilePayload
+ */
+public interface JwtPayloadRepository {
+
+	/**
+	 * Issue a JWT for the {@link SecurityPrincipal} carried by the supplied
+	 * authentication token.
+	 *
+	 * &lt;p&gt;If the token's principal is not a {@link SecurityPrincipal}, an empty
+	 * string is returned. The default implementation simply delegates to
+	 * {@link #issueJwt(SecurityPrincipal)}.&lt;/p&gt;
+	 *
+	 * @param token the Spring Security authentication token
+	 * @return the encoded JWT, or an empty string if no principal is present
+	 */
+	default String issueJwt(AbstractAuthenticationToken token) {
+<span class="fc bfc" id="L53" title="All 2 branches covered.">		if(token.getPrincipal() instanceof SecurityPrincipal) {</span>
+<span class="fc" id="L54">			SecurityPrincipal principal = (SecurityPrincipal) token.getPrincipal();</span>
+<span class="fc" id="L55">			return this.issueJwt(principal);</span>
+		}
+<span class="fc" id="L57">		return &quot;&quot;;</span>
+	};
+
+	/**
+	 * Issue a JWT for the supplied principal. By default delegates to
+	 * {@link #issueJwt(String, Map)} using the principal's uid and profile.
+	 *
+	 * @param principal the security principal
+	 * @return the encoded JWT
+	 */
+	default String issueJwt(SecurityPrincipal principal) {
+<span class="fc" id="L68">		return this.issueJwt(principal.getUid(), principal.getProfile());</span>
+	};
+
+	/**
+	 * Issue a JWT for the supplied user id and profile map.
+	 *
+	 * &lt;p&gt;The default implementation returns an empty string; concrete
+	 * repositories are expected to override it.&lt;/p&gt;
+	 *
+	 * @param uid     the upstream user id
+	 * @param profile the profile map to embed as claims
+	 * @return the encoded JWT
+	 */
+	default String issueJwt(String uid, Map&lt;String, Object&gt; profile) {
+<span class="fc" id="L82">		return &quot;&quot;;</span>
+	};
+
+	/**
+	 * Verify a JWT extracted from a Spring Security authentication token.
+	 *
+	 * @param token        the Spring Security authentication token
+	 * @param checkExpiry  whether the expiration should be checked
+	 * @return {@code true} if the token is valid
+	 * @throws AuthenticationException if the token cannot be verified
+	 */
+	default boolean verify(AbstractAuthenticationToken token, boolean checkExpiry) throws AuthenticationException{
+<span class="fc" id="L94">		return false;</span>
+	};
+
+	/**
+	 * Verify a raw JWT string.
+	 *
+	 * @param token       the raw JWT
+	 * @param checkExpiry whether the expiration should be checked
+	 * @return {@code true} if the token is valid
+	 * @throws AuthenticationException if the token cannot be verified
+	 */
+	default boolean verify(String token, boolean checkExpiry) throws AuthenticationException{
+<span class="fc" id="L106">		return false;</span>
+	};
+
+	/**
+	 * Parse the JWT carried by the authentication token and return its
+	 * payload.
+	 *
+	 * @param token       the Spring Security authentication token
+	 * @param checkExpiry whether the expiration should be checked
+	 * @return the parsed payload, or {@code null} if the token is invalid
+	 */
+	default JwtPayload getPayload(AbstractAuthenticationToken token, boolean checkExpiry){
+<span class="fc" id="L118">		return null;</span>
+	};
+
+	/**
+	 * Parse a raw JWT string and return its payload.
+	 *
+	 * @param token       the raw JWT
+	 * @param checkExpiry whether the expiration should be checked
+	 * @return the parsed payload, or {@code null} if the token is invalid
+	 */
+	default JwtPayload getPayload(String token, boolean checkExpiry){
+<span class="fc" id="L129">		return null;</span>
+	};
+
+	/**
+	 * Build a {@link UserProfilePayload} for the principal carried by the
+	 * supplied authentication token and decorate it with a freshly-issued JWT.
+	 *
+	 * &lt;p&gt;The default implementation casts the token's principal to
+	 * {@link SecurityPrincipal}, calls {@link SecurityPrincipal#toPayload()},
+	 * embeds the freshly-issued token via {@link #issueJwt(AbstractAuthenticationToken)}
+	 * and returns the resulting payload.&lt;/p&gt;
+	 *
+	 * @param token       the Spring Security authentication token
+	 * @param checkExpiry whether the expiration should be checked when issuing
+	 * @return a profile payload populated with the freshly-issued JWT
+	 */
+	default UserProfilePayload getProfilePayload(AbstractAuthenticationToken token, boolean checkExpiry){
+
+		// Reuse the authenticated principal's payload as the starting point.
+<span class="fc" id="L148">		SecurityPrincipal principal = (SecurityPrincipal) token.getPrincipal();</span>
+
+<span class="fc" id="L150">		String tokenString = this.issueJwt(token);</span>
+
+<span class="fc" id="L152">		UserProfilePayload payload = principal.toPayload();</span>
+<span class="fc" id="L153">		payload.setToken(tokenString);</span>
+
+<span class="fc" id="L155">		return payload;</span>
+
+	};;
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

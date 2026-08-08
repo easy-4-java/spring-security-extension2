@@ -29,6 +29,7 @@ import lombok.ToString;
  *
  * @author [@Loong Wan](https://github.com/loong10k)
  * @since 3.0.0
+ * @see HeaderHpkpProperties
  * @see <a href="https://tools.ietf.org/html/rfc6797">RFC 6797</a>
  */
 @Getter

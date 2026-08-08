@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthResponseCode.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">io.github.easy4j:spring-security-extension2</a> &gt; <a href="index.source.html" class="el_package">org.springframework.security.extension.exception</a> &gt; <span class="el_source">AuthResponseCode.java</span></div><h1>AuthResponseCode.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (c) 2018-present, easy-4-java (https://github.com/easy-4-java).
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.springframework.security.extension.exception;
+
+/**
+ * Enumeration of response codes used by the authentication and authorisation
+ * layers of the easy-4-java security stack.
+ *
+ * &lt;p&gt;Every constant combines three pieces of information:&lt;/p&gt;
+ * &lt;ul&gt;
+ *     &lt;li&gt;an integer {@link #getCode() code} that follows the API code
+ *         convention defined in {@link ApiCodeValue};&lt;/li&gt;
+ *     &lt;li&gt;a {@link #getStatus() status} string drawn from
+ *         {@link AuthConstants} ({@code success}, {@code fail} or
+ *         {@code error});&lt;/li&gt;
+ *     &lt;li&gt;a {@link #getMsgKey() message key} that the caller can resolve
+ *         against an internationalised resource bundle.&lt;/li&gt;
+ * &lt;/ul&gt;
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 3.0.0
+ * @see ApiCodeValue
+ * @see AuthConstants
+ * @see AuthResponse
+ */
+<span class="fc" id="L39">public enum AuthResponseCode {</span>
+
+	/**
+	 * Authentication succeeded.
+	 */
+<span class="fc" id="L44">	SC_AUTHC_SUCCESS(ApiCodeValue.SC_SUCCESS, AuthConstants.RT_SUCCESS, &quot;spring.security.authc.success&quot;),</span>
+
+	/**
+	 * Authentication failed.
+	 */
+<span class="fc" id="L49">	SC_AUTHC_FAIL(ApiCodeValue.SC_AUTHC_FAIL, AuthConstants.RT_ERROR, &quot;spring.security.authc.fail&quot;),</span>
+
+	/**
+	 * The HTTP method used for authentication is not supported.
+	 */
+<span class="fc" id="L54">	SC_AUTHC_METHOD_NOT_ALLOWED(ApiCodeValue.SC_AUTHC_METHOD_NOT_ALLOWED, AuthConstants.RT_ERROR,</span>
+			&quot;spring.security.authc.method-not-supported&quot;),
+	/**
+	 * The number of login attempts exceeded the maximum retry limit and a
+	 * verification code is now required.
+	 */
+<span class="fc" id="L60">	SC_AUTHC_OVER_RETRY_REMIND(ApiCodeValue.SC_AUTHC_OVER_RETRY_REMIND, AuthConstants.RT_ERROR,</span>
+			&quot;spring.security.authc.over-retry-remind&quot;),
+	/**
+	 * The captcha parameter was not supplied.
+	 */
+<span class="fc" id="L65">	SC_AUTHC_CAPTCHA_REQUIRED(ApiCodeValue.SC_AUTHC_CAPTCHA_REQUIRED, AuthConstants.RT_ERROR,</span>
+			&quot;spring.security.authc.captcha.required&quot;),
+	/**
+	 * The supplied captcha has expired.
+	 */
+<span class="fc" id="L70">	SC_AUTHC_CAPTCHA_EXPIRED(ApiCodeValue.SC_AUTHC_CAPTCHA_EXPIRED, AuthConstants.RT_ERROR,</span>
+			&quot;spring.security.authc.captcha.expired&quot;),
+	/**
+	 * The supplied captcha is incorrect.
+	 */
+<span class="fc" id="L75">	SC_AUTHC_CAPTCHA_INCORRECT(ApiCodeValue.SC_AUTHC_CAPTCHA_INCORRECT, AuthConstants.RT_ERROR,</span>
+			&quot;spring.security.authc.captcha.incorrect&quot;),
+
+	/**
+	 * The user account does not exist.
+	 */
+<span class="fc" id="L81">	SC_AUTHC_ACCOUNT_NOT_FOUND(ApiCodeValue.SC_AUTHC_ACCOUNT_NOT_FOUND, AuthConstants.RT_ERROR,</span>
+			&quot;spring.security.authc.principal.not-found&quot;),
+	/**
+	 * The user account is disabled.
+	 */
+<span class="fc" id="L86">	SC_AUTHC_ACCOUNT_DISABLED(ApiCodeValue.SC_AUTHC_ACCOUNT_DISABLED, AuthConstants.RT_ERROR,</span>
+			&quot;spring.security.authc.principal.disabled&quot;),
+	/**
+	 * The user account has expired.
+	 */
+<span class="fc" id="L91">	SC_AUTHC_ACCOUNT_EXPIRED(ApiCodeValue.SC_AUTHC_ACCOUNT_EXPIRED, AuthConstants.RT_ERROR,</span>
+			&quot;spring.security.authc.principal.expired&quot;),
+	/**
+	 * The user account is locked.
+	 */
+<span class="fc" id="L96">	SC_AUTHC_ACCOUNT_LOCKED(ApiCodeValue.SC_AUTHC_ACCOUNT_LOCKED, AuthConstants.RT_ERROR,</span>
+			&quot;spring.security.authc.principal.locked&quot;),
+
+	/**
+	 * The user credentials have expired.
+	 */
+<span class="fc" id="L102">	SC_AUTHC_CREDENTIALS_EXPIRED(ApiCodeValue.SC_AUTHC_CREDENTIALS_EXPIRED, AuthConstants.RT_ERROR,</span>
+			&quot;spring.security.authc.credentials.expired&quot;),
+	/**
+	 * The supplied credentials are invalid.
+	 */
+<span class="fc" id="L107">	SC_AUTHC_BAD_CREDENTIALS(ApiCodeValue.SC_AUTHC_BAD_CREDENTIALS, AuthConstants.RT_ERROR,</span>
+			&quot;spring.security.authc.credentials.incorrect&quot;),
+
+	/**
+	 * Authorisation succeeded.
+	 */
+<span class="fc" id="L113">	SC_AUTHZ_SUCCESS(ApiCodeValue.SC_SUCCESS, AuthConstants.RT_SUCCESS, &quot;spring.security.authz.success&quot;),</span>
+	/**
+	 * Authorisation failed.
+	 */
+<span class="fc" id="L117">	SC_AUTHZ_FAIL(ApiCodeValue.SC_AUTHZ_FAIL, AuthConstants.RT_ERROR, &quot;spring.security.authz.fail&quot;),</span>
+	/**
+	 * The token could not be issued.
+	 */
+<span class="fc" id="L121">	SC_AUTHZ_TOKEN_ISSUED(ApiCodeValue.SC_AUTHZ_TOKEN_ISSUED, AuthConstants.RT_ERROR,</span>
+			&quot;spring.security.authz.token.issued&quot;),
+	/**
+	 * The token parameter was not provided.
+	 */
+<span class="fc" id="L126">	SC_AUTHZ_TOKEN_REQUIRED(ApiCodeValue.SC_AUTHZ_TOKEN_REQUIRED, AuthConstants.RT_ERROR,</span>
+			&quot;spring.security.authz.token.required&quot;),
+	/**
+	 * The supplied token has expired.
+	 */
+<span class="fc" id="L131">	SC_AUTHZ_TOKEN_EXPIRED(ApiCodeValue.SC_AUTHZ_TOKEN_EXPIRED, AuthConstants.RT_ERROR,</span>
+			&quot;spring.security.authz.token.expired&quot;),
+	/**
+	 * The supplied token is no longer valid.
+	 */
+<span class="fc" id="L136">	SC_AUTHZ_TOKEN_INVALID(ApiCodeValue.SC_AUTHZ_TOKEN_INVALID, AuthConstants.RT_ERROR,</span>
+			&quot;spring.security.authz.token.invalid&quot;),
+	/**
+	 * The supplied token is incorrect.
+	 */
+<span class="fc" id="L141">	SC_AUTHZ_TOKEN_INCORRECT(ApiCodeValue.SC_AUTHZ_TOKEN_INCORRECT, AuthConstants.RT_ERROR,</span>
+			&quot;spring.security.authz.token.incorrect&quot;),
+	/**
+	 * The authorisation code was not supplied.
+	 */
+<span class="fc" id="L146">	SC_AUTHZ_CODE_REQUIRED(ApiCodeValue.SC_AUTHZ_CODE_REQUIRED, AuthConstants.RT_ERROR,</span>
+			&quot;spring.security.authz.code.required&quot;),
+	/**
+	 * The authorisation code has expired.
+	 */
+<span class="fc" id="L151">	SC_AUTHZ_CODE_EXPIRED(ApiCodeValue.SC_AUTHZ_CODE_EXPIRED, AuthConstants.RT_ERROR,</span>
+			&quot;spring.security.authz.code.expired&quot;),
+	/**
+	 * The authorisation code is no longer valid.
+	 */
+<span class="fc" id="L156">	SC_AUTHZ_CODE_INVALID(ApiCodeValue.SC_AUTHZ_CODE_INVALID, AuthConstants.RT_ERROR,</span>
+			&quot;spring.security.authz.code.invalid&quot;),
+	/**
+	 * The authorisation code is incorrect.
+	 */
+<span class="fc" id="L161">	SC_AUTHZ_CODE_INCORRECT(ApiCodeValue.SC_AUTHZ_CODE_INCORRECT, AuthConstants.RT_ERROR,</span>
+			&quot;spring.security.authz.code.incorrect&quot;),
+	/**
+	 * The third-party authorisation server returned an error.
+	 */
+<span class="fc" id="L166">	SC_AUTHZ_THIRD_PARTY_SERVICE(ApiCodeValue.SC_AUTHZ_THIRD_PARTY_SERVICE, AuthConstants.RT_ERROR,</span>
+			&quot;spring.security.authz.server.error&quot;);
+
+	private final int code;
+	private final String status;
+	private final String msgKey;
+
+<span class="fc" id="L173">	private AuthResponseCode(int code, String status, String msgKey) {</span>
+<span class="fc" id="L174">		this.code = code;</span>
+<span class="fc" id="L175">		this.status = status;</span>
+<span class="fc" id="L176">		this.msgKey = msgKey;</span>
+<span class="fc" id="L177">	}</span>
+
+	/**
+	 * @return the integer API code associated with this response
+	 */
+	public int getCode() {
+<span class="fc" id="L183">		return code;</span>
+	}
+
+	/**
+	 * @return the coarse-grained status string ({@code success},
+	 *         {@code fail} or {@code error})
+	 */
+	public String getStatus() {
+<span class="fc" id="L191">		return status;</span>
+	}
+
+	/**
+	 * @return the i18n message key for this response
+	 */
+	public String getMsgKey() {
+<span class="fc" id="L198">		return msgKey;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

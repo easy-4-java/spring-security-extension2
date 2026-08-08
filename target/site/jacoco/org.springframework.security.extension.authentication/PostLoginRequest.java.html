@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PostLoginRequest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">io.github.easy4j:spring-security-extension2</a> &gt; <a href="index.source.html" class="el_package">org.springframework.security.extension.authentication</a> &gt; <span class="el_source">PostLoginRequest.java</span></div><h1>PostLoginRequest.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (c) 2018-present, easy-4-java (https://github.com/easy-4-java).
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.springframework.security.extension.authentication;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Request body model consumed by the REST-mode login endpoint.
+ *
+ * &lt;p&gt;The model binds the three JSON properties {@code username},
+ * {@code password} and {@code captcha} via the Jackson {@link JsonCreator}
+ * annotation so that the endpoint can be called from a JSON client without
+ * any additional deserialisation configuration.&lt;/p&gt;
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 3.0.0
+ */
+public class PostLoginRequest {
+
+	/** The account used for authentication (required). */
+    private String username;
+    /** The password used for authentication (required). */
+    private String password;
+    /** The captcha presented by the user, if required (optional). */
+    private String captcha;
+
+	/**
+	 * Create a new login request body.
+	 *
+	 * @param username the username presented by the client
+	 * @param password the password presented by the client
+	 * @param captcha  the captcha presented by the client (may be {@code null})
+	 */
+    @JsonCreator
+<span class="fc" id="L49">    public PostLoginRequest(@JsonProperty(&quot;username&quot;) String username, @JsonProperty(&quot;password&quot;) String password, @JsonProperty(&quot;captcha&quot;) String captcha) {</span>
+<span class="fc" id="L50">        this.username = username;</span>
+<span class="fc" id="L51">        this.password = password;</span>
+<span class="fc" id="L52">        this.captcha = captcha;</span>
+<span class="fc" id="L53">    }</span>
+
+	/**
+	 * @return the username presented by the client
+	 */
+    public String getUsername() {
+<span class="fc" id="L59">        return username;</span>
+    }
+
+	/**
+	 * @return the password presented by the client
+	 */
+    public String getPassword() {
+<span class="fc" id="L66">        return password;</span>
+    }
+
+	/**
+	 * @return the captcha presented by the client (may be {@code null})
+	 */
+	public String getCaptcha() {
+<span class="fc" id="L73">		return captcha;</span>
+	}
+
+	/**
+	 * @param captcha the captcha presented by the client (may be {@code null})
+	 */
+	public void setCaptcha(String captcha) {
+<span class="fc" id="L80">		this.captcha = captcha;</span>
+<span class="fc" id="L81">	}</span>
+
+	/**
+	 * @param username the username presented by the client
+	 */
+	public void setUsername(String username) {
+<span class="fc" id="L87">		this.username = username;</span>
+<span class="fc" id="L88">	}</span>
+
+	/**
+	 * @param password the password presented by the client
+	 */
+	public void setPassword(String password) {
+<span class="fc" id="L94">		this.password = password;</span>
+<span class="fc" id="L95">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>
