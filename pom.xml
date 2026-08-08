@@ -60,6 +60,7 @@
 		<swagger.version>1.6.4</swagger.version>
 		<javax-servlet-api.version>4.0.1</javax-servlet-api.version>
 		<easy4j-jwt-issuer.version>1.0.x.20260630-SNAPSHOT</easy4j-jwt-issuer.version>
+        <maven-central-publishing-plugin.version>0.11.0</maven-central-publishing-plugin.version>
 		<spring-security.version>5.6.0</spring-security.version></properties>
 
     <!-- 依赖版本统一管理（dependencyManagement） -->
