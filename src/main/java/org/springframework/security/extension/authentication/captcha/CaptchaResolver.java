@@ -20,26 +20,37 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 
 /**
- * Captcha Resolver
+ * Strategy abstraction for verifying and storing captcha values across HTTP
+ * requests.
+ *
+ * <p>Implementations are typically backed by a server-side store (such as
+ * the HTTP session or a Redis cache) so that the captcha issued during the
+ * previous response can be matched against the value posted by the client.</p>
+ *
  * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 3.0.0
+ * @see NullCaptchaResolver
  */
 public interface CaptchaResolver {
 
 	/**
-	 * Valid the current captcha via the given request.
-	 * @param request request to be used for resolution
-	 * @param capText the captcha value
-	 * @return the result
+	 * Validate the captcha supplied with the given request.
+	 *
+	 * @param request the servlet request
+	 * @param capText the captcha text supplied by the client
+	 * @return {@code true} if the captcha is valid
 	 */
 	boolean validCaptcha(HttpServletRequest request, String capText);
 
 	/**
-	 * Set the current captcha to the given one.
-	 * @param request request to be used for captcha modification
-	 * @param response response to be used for captcha modification
-	 * @param capText the new captcha value
-	 * @param capDate the captcha create time
+	 * Store the supplied captcha so that it can be matched on a subsequent
+	 * request.
+	 *
+	 * @param request  the servlet request
+	 * @param response the servlet response
+	 * @param capText  the new captcha text
+	 * @param capDate  the timestamp at which the captcha was issued
 	 */
 	void setCaptcha(HttpServletRequest request, HttpServletResponse response, String capText, Date capDate);
-	
+
 }

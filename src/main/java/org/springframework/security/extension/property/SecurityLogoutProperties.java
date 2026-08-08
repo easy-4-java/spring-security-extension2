@@ -20,21 +20,32 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Security Logout Properties
+ * Configuration properties that control the behaviour of the logout filter.
+ *
+ * <p>These properties mirror a subset of Spring Security's logout filter
+ * configuration and are typically bound from the application configuration
+ * under the {@code spring.security.logout} prefix.</p>
+ *
  * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 3.0.0
+ * @see SecurityRedirectProperties
+ * @see SecurityEntryPointProperties
  */
 @Getter
 @Setter
 @ToString
 public class SecurityLogoutProperties {
 
-	/** 注销地址：会话注销后的重定向地址 */
+	/** The endpoint that triggers session termination. */
 	private String logoutUrl;
+	/** URL patterns that the logout filter will respond to. Defaults to {@code /logout}. */
 	private String pathPatterns = "/logout";
-	/** 注销地址：会话注销后的重定向地址 */
+	/** The redirect target served after a successful session termination. */
 	private String logoutSuccessUrl;
 
+	/** Whether the underlying HTTP session should be invalidated on logout. Defaults to {@code true}. */
 	private boolean invalidateHttpSession = true;
+	/** Whether the {@code SecurityContext} should be cleared on logout. Defaults to {@code true}. */
 	private boolean clearAuthentication = true;
 
 }

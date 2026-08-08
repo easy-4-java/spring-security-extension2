@@ -20,16 +20,39 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 
 /**
- * Null Captcha Resolver
+ * No-op {@link CaptchaResolver} that always reports the captcha as valid.
+ *
+ * <p>It is intended to be wired in by default when no captcha mechanism is
+ * configured. Both {@link #validCaptcha(HttpServletRequest, String)} and
+ * {@link #setCaptcha(HttpServletRequest, HttpServletResponse, String, Date)}
+ * are essentially pass-throughs.</p>
+ *
  * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 3.0.0
+ * @see CaptchaResolver
  */
 public class NullCaptchaResolver implements CaptchaResolver {
 
+	/**
+	 * Always returns {@code true}.
+	 *
+	 * @param request the servlet request
+	 * @param capText the captcha text supplied by the client
+	 * @return {@code true}
+	 */
 	@Override
 	public boolean validCaptcha(HttpServletRequest request, String capText) {
 		return true;
 	}
 
+	/**
+	 * No-op implementation that discards the supplied captcha.
+	 *
+	 * @param request  the servlet request
+	 * @param response the servlet response
+	 * @param capText  the new captcha text
+	 * @param capDate  the timestamp at which the captcha was issued
+	 */
 	@Override
 	public void setCaptcha(HttpServletRequest request, HttpServletResponse response, String capText, Date capDate) {
 

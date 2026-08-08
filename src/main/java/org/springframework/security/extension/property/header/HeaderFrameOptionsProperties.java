@@ -20,8 +20,17 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Header Frame Options Properties
+ * Configuration properties that control the {@code X-Frame-Options} response
+ * header written by the security filter.
+ *
+ * <p>Mirrors the equivalent Spring Security configuration and is typically
+ * bound from the application configuration under the
+ * {@code spring.security.headers.frame-options} prefix.</p>
+ *
  * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 3.0.0
+ * @see HeaderContentTypeOptionsProperties
+ * @see HeaderXssProtectionProperties
  */
 @Getter
 @Setter
@@ -29,18 +38,20 @@ import lombok.ToString;
 public class HeaderFrameOptionsProperties {
 
 	/**
-	 * Enable Security Headers.
+	 * When {@code true}, the filter writes the {@code X-Frame-Options} header.
+	 * Defaults to {@code false}.
 	 */
 	private boolean enabled = false;
 	/**
-	 * Specify to DENY framing any content from this application.
+	 * When {@code true}, framing any content from this application is denied.
+	 * Defaults to {@code false}.
 	 */
 	private boolean deny = false;
 	/**
-	 * Specify to allow any request that comes from the same origin to frame this
-	 * application. For example, if the application was hosted on example.com, then
-	 * example.com could frame the application, but evil.com could not frame the
-	 * application.
+	 * When {@code true}, only requests from the same origin are allowed to
+	 * frame this application. For example, if the application is hosted on
+	 * {@code example.com}, then {@code example.com} may frame it, but
+	 * {@code evil.com} may not. Defaults to {@code false}.
 	 */
 	private boolean sameOrigin = false;
 
