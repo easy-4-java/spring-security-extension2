@@ -20,8 +20,17 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Header ContentType Options Properties
+ * Configuration properties that control the
+ * {@code X-Content-Type-Options} response header written by the security
+ * filter.
+ *
+ * <p>Mirrors the equivalent Spring Security configuration and is typically
+ * bound from the application configuration under the
+ * {@code spring.security.headers.content-type-options} prefix.</p>
+ *
  * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 3.0.0
+ * @see HeaderXssProtectionProperties
  */
 @Getter
 @Setter
@@ -29,7 +38,8 @@ import lombok.ToString;
 public class HeaderContentTypeOptionsProperties {
 
 	/**
-	 * Enable Security Headers.
+	 * When {@code true}, the filter writes the
+	 * {@code X-Content-Type-Options: nosniff} header. Defaults to {@code false}.
 	 */
 	private boolean enabled = false;
 
