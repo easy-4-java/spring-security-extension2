@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
  * principal by Spring Security so that downstream code can rely on a richer
  * type than the default {@link User}.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 3.0.0
  * @see User
  * @see UserProfilePayload

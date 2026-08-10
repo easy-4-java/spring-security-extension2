@@ -26,7 +26,7 @@ import javax.servlet.ServletResponse;
  * keyed off a request attribute (typically the session id or a username).
  * The default request attribute name is {@link #DEFAULT_RETRY_TIMES_KEY_PARAM_NAME}.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 3.0.0
  */
 public interface AuthenticatingFailureCounter {

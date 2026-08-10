@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * annotation so that the endpoint can be called from a JSON client without
  * any additional deserialisation configuration.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 3.0.0
  */
 public class PostLoginRequest {

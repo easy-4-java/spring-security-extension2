@@ -35,7 +35,7 @@ import java.util.*;
  * <p>Each field is mapped to a swagger property via {@link ApiModelProperty}
  * so the resulting JSON contract is self-describing.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 3.0.0
  * @see SecurityPrincipal#toPayload()
  * @see io.github.easy4j.jwt.JwtPayload

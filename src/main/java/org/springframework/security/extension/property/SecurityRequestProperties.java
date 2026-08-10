@@ -23,7 +23,7 @@ package org.springframework.security.extension.property;
  * filters, request matchers, etc.) without breaking the configuration binding
  * prefix.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 3.0.0
  * @see SecurityRedirectProperties
  * @see SecurityLogoutProperties

@@ -27,7 +27,7 @@ import java.util.Date;
  * the HTTP session or a Redis cache) so that the captcha issued during the
  * previous response can be matched against the value posted by the client.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 3.0.0
  * @see NullCaptchaResolver
  */

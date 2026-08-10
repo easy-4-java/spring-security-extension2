@@ -27,7 +27,7 @@ import lombok.ToString;
  * bound from the application configuration under the
  * {@code spring.security.headers.hsts} prefix.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 3.0.0
  * @see HeaderHpkpProperties
  * @see <a href="https://tools.ietf.org/html/rfc6797">RFC 6797</a>

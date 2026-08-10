@@ -24,7 +24,7 @@ package org.springframework.security.extension.exception;
  * {@code 10030} for third-party authorisation server failures. Each value is
  * referenced by a corresponding {@link AuthResponseCode} constant.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 3.0.0
  * @see AuthResponseCode
  * @see AuthResponse

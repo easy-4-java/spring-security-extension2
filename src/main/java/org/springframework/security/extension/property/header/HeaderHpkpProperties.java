@@ -30,7 +30,7 @@ import java.util.Map;
  * bound from the application configuration under the
  * {@code spring.security.headers.hpkp} prefix.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 3.0.0
  * @see HeaderHstsProperties
  * @see <a href="https://tools.ietf.org/html/rfc7469">RFC 7469</a>

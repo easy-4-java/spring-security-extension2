@@ -28,7 +28,7 @@ import lombok.ToString;
  * force HTTPS and to choose between a redirect-style and a forward-style
  * dispatch when the unauthenticated request must be answered.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 3.0.0
  * @see SecurityRedirectProperties
  * @see SecurityLogoutProperties
