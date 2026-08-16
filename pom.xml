@@ -47,7 +47,7 @@
             <central-publishing-maven-plugin.version>0.11.0</central-publishing-maven-plugin.version>
             <commons-lang3.version>3.20.0</commons-lang3.version>
             <easy4j-jwt-issuer.version>3.0.x.20260630-SNAPSHOT</easy4j-jwt-issuer.version>
-            <jackson.version>2.17.2</jackson.version>
+            <jackson-bom.version>3.2.1</jackson-bom.version>
             <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
             <javax-servlet-api.version>4.0.1</javax-servlet-api.version>
             <junit-jupiter.version>6.1.0</junit-jupiter.version>
@@ -66,18 +66,20 @@
     <!-- 依赖版本统一管理（dependencyManagement） -->
     <dependencyManagement>
         <dependencies>
+            <!-- Jackson BOM (tools.jackson 3.x; annotations stay com.fasterxml 2.x) -->
+            <dependency>
+                <groupId>tools.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <!-- For Lombok -->
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
                 <scope>provided</scope>
-            </dependency>
-            <!-- For Jackson -->
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>${jackson.version}</version>
             </dependency>
             <!-- For Swagger -->
             <dependency>
